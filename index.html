@@ -1,0 +1,333 @@
+<!-- 1. Minijuego Nº9: Memoria -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memoria</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #333;
+      color: white;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      gap: 10px;
+    }
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: #444;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      color: transparent;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .card.flipped {
+      background-color: cyan;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memoria</h1>
+  <p>Encuentra todos los pares iguales</p>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const grid = document.getElementById("grid");
+    const symbols = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    const cards = [...symbols, ...symbols];
+
+    // Mezclar las cartas
+    cards.sort(() => Math.random() - 0.5);
+
+    let firstCard = null;
+    let secondCard = null;
+    let flippedCards = 0;
+
+    // Crear las cartas
+    cards.forEach((symbol) => {
+      const card = document.createElement("div");
+      card.classList.add("card");
+      card.textContent = symbol;
+      card.addEventListener("click", () => flipCard(card));
+      grid.appendChild(card);
+    });
+
+    function flipCard(card) {
+      if (card.classList.contains("flipped") || secondCard) return;
+
+      card.classList.add("flipped");
+
+      if (!firstCard) {
+        firstCard = card;
+      } else {
+        secondCard = card;
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      if (firstCard.textContent === secondCard.textContent) {
+        flippedCards += 2;
+        resetSelection();
+        if (flippedCards === cards.length) {
+          setTimeout(() => alert("¡Ganaste!"), 500);
+        }
+      } else {
+        setTimeout(() => {
+          firstCard.classList.remove("flipped");
+          secondCard.classList.remove("flipped");
+          resetSelection();
+        }, 1000);
+      }
+    }
+
+    function resetSelection() {
+      firstCard = null;
+      secondCard = null;
+    }
+  </script>
+</body>
+</html>
+
+<!-- 2. Minijuego Nº11: La cuerda equilibrista -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Cuerda Equilibrista</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #222;
+      color: white;
+      overflow: hidden;
+    }
+    #game-area {
+      position: relative;
+      width: 600px;
+      height: 300px;
+      background-color: black;
+      border: 2px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    #rope {
+      position: absolute;
+      bottom: 50px;
+      width: 100%;
+      height: 10px;
+      background-color: white;
+    }
+    #player {
+      position: absolute;
+      bottom: 60px;
+      width: 20px;
+      height: 50px;
+      background-color: cyan;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body>
+  <div id="game-area">
+    <div id="rope"></div>
+    <div id="player"></div>
+  </div>
+  <script>
+    const player = document.getElementById("player");
+    let balance = 0;
+
+    function tiltPlayer(e) {
+      if (e.key === "ArrowLeft") {
+        balance -= 5;
+      } else if (e.key === "ArrowRight") {
+        balance += 5;
+      }
+      updateBalance();
+    }
+
+    function updateBalance() {
+      player.style.transform = `translateX(-50%) rotate(${balance}deg)`;
+      if (Math.abs(balance) > 30) {
+        alert("¡Perdiste el equilibrio!");
+        balance = 0;
+        updateBalance();
+      }
+    }
+
+    window.addEventListener("keydown", tiltPlayer);
+  </script>
+</body>
+</html>
+
+<!-- 3. Minijuego Nº12: Escapa del Rayo -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escapa del Rayo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: black;
+      color: white;
+    }
+    #game-area {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      background-color: #333;
+      overflow: hidden;
+      border: 2px solid white;
+    }
+    #player {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: cyan;
+      border-radius: 5px;
+    }
+    #lightning {
+      position: absolute;
+      width: 10px;
+      height: 100%;
+      background-color: yellow;
+      left: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-area">
+    <div id="player"></div>
+    <div id="lightning"></div>
+  </div>
+  <script>
+    const player = document.getElementById("player");
+    const lightning = document.getElementById("lightning");
+    const gameArea = document.getElementById("game-area");
+
+    function movePlayer(e) {
+      const step = 20;
+      if (e.key === "ArrowLeft" && player.offsetLeft > 0) {
+        player.style.left = `${player.offsetLeft - step}px`;
+      } else if (e.key === "ArrowRight" && player.offsetLeft < gameArea.offsetWidth - player.offsetWidth) {
+        player.style.left = `${player.offsetLeft + step}px`;
+      }
+    }
+
+    window.addEventListener("keydown", movePlayer);
+
+    let lightningPos = 50;
+    setInterval(() => {
+      lightningPos -= 1;
+      if (lightningPos < 0) lightningPos = 100;
+      lightning.style.left = `${lightningPos}%`;
+      if (
+        player.offsetLeft < lightning.offsetLeft + lightning.offsetWidth &&
+        player.offsetLeft + player.offsetWidth > lightning.offsetLeft
+      ) {
+        alert("¡Te alcanzó el rayo! Has perdido.");
+        window.location.reload();
+      }
+    }, 50);
+  </script>
+</body>
+</html>
+
+<!-- 4. Minijuego Nº16: Construcción de Torre -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construcción de Torre</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #222;
+      color: white;
+    }
+    #game-area {
+      position: relative;
+      width: 300px;
+      height: 500px;
+      background-color: black;
+      overflow: hidden;
+      border: 2px solid white;
+    }
+    .block {
+      position: absolute;
+      width: 100%;
+      height: 20px;
+      background-color: cyan;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-area"></div>
+  <script>
+    const gameArea = document.getElementById("game-area");
+    let currentBlock;
+    let position = 0;
+
+    function dropBlock() {
+      if (!currentBlock) {
+        currentBlock = createBlock(position);
+        gameArea.appendChild(currentBlock);
+      } else {
+        position += 20;
+        currentBlock.style.top = `${position}px`;
+        currentBlock = createBlock(0);
+        gameArea.appendChild(currentBlock);
+      }
+    }
+
+    function createBlock(pos) {
+      const block = document.createElement("div");
+      block.className = "block";
+      block.style.top = `${pos}px`;
+      return block;
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === " " || e.key === "Space") dropBlock();
+    });
+  </script>
+</body>
+</html>
